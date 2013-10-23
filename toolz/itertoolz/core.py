@@ -444,3 +444,16 @@ def iterate(f, x):
     while True:
         yield x
         x = f(x)
+
+
+def union(seqs):
+    """ Union of several collections
+
+    >>> union([(1, 2, 3), (2, 3, 4), (8, 9)])
+    set([1, 2, 3, 4, 8, 9])
+
+    See Also:
+        unique and concat: used together perform this operation lazily
+        intersection
+    """
+    return reduce(set.union, seqs, set())
