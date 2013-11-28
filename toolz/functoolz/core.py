@@ -109,6 +109,7 @@ def memoize(f, cache=None):
     except TypeError:
         may_have_kwargs = True
 
+    @try_wraps(f)
     def memof(*args, **kwargs):
         try:
             if may_have_kwargs:
@@ -126,11 +127,6 @@ def memoize(f, cache=None):
             cache[key] = result
             return result
 
-    for attr in functools.WRAPPER_ASSIGNMENTS:
-        try:
-            setattr(memof, attr, getattr(f, attr))
-        except AttributeError:
-            pass
     return memof
 
 
@@ -235,6 +231,24 @@ class curry(object):
                     return partial(self.func, *args)
 
             return curry(self.func, *args, **kwargs)
+
+
+@curry
+def try_wraps(f, g):
+    """ Assign name and docstring of f to g
+
+    This function is the same as ``functools.wraps`` but fails gracefully when
+    f is a builtin or otherwise challenging function
+
+    See Also:
+        functools.wraps
+    """
+    for attr in functools.WRAPPER_ASSIGNMENTS:
+        try:
+            setattr(g, attr, getattr(f, attr))
+        except AttributeError:
+            pass
+    return g
 
 
 def compose(*funcs):

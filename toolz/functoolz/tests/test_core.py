@@ -1,6 +1,6 @@
 from toolz.functoolz import (thread_first, thread_last, memoize, curry,
                              compose, pipe, complement)
-from toolz.functoolz.core import _num_required_args
+from toolz.functoolz.core import _num_required_args, try_wraps
 from operator import add, mul
 from toolz.utils import raises
 from functools import partial
@@ -49,6 +49,20 @@ def test_memoize():
     assert fn_calls == [1]  # function was only called once
     assert mf.__doc__ == f.__doc__
     assert raises(TypeError, lambda: mf(1, {}))
+
+
+def test_try_wraps():
+    def asdf(x):
+        """ docstring """
+        pass
+
+    def g(y):
+        pass
+
+    g2 = try_wraps(asdf, g)
+
+    assert g2.__doc__ == asdf.__doc__
+    assert g2.__name__ == 'asdf'
 
 
 def test_memoize_kwargs():
