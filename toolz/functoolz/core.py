@@ -1,4 +1,5 @@
 from functools import reduce, partial
+import functools
 import inspect
 import operator
 
@@ -125,11 +126,11 @@ def memoize(f, cache=None):
             cache[key] = result
             return result
 
-    try:
-        memof.__name__ = f.__name__
-    except AttributeError:
-        pass
-    memof.__doc__ = f.__doc__
+    for attr in functools.WRAPPER_ASSIGNMENTS:
+        try:
+            setattr(memof, attr, getattr(f, attr))
+        except AttributeError:
+            pass
     return memof
 
 
