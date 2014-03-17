@@ -213,3 +213,15 @@ def get_in(keys, coll, default=None, no_default=False):
         if no_default:
             raise
         return default
+
+
+def select_keys(d, keys):
+    """
+    Returns a new dictionary containing only keys.
+    The collection keys is converted to a set, so any compatible collection will work.
+
+    >>> select_keys({'a':1,'b':2}, ['a'])
+    {'a': 1}
+    """
+    isec = set(d.keys()).intersection(set(keys))
+    return reduce(lambda nd, k: assoc(nd, k, d[k]), isec, {})
