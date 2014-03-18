@@ -217,11 +217,16 @@ def get_in(keys, coll, default=None, no_default=False):
 
 def select_keys(d, keys):
     """
-    Returns a new dictionary containing only keys.
+    Returns a new dictionary containing only specified keys.
+
     The collection keys is converted to a set, so any compatible collection will work.
 
     >>> select_keys({'a':1,'b':2}, ['a'])
     {'a': 1}
     """
-    isec = set(d.keys()).intersection(set(keys))
-    return reduce(lambda nd, k: assoc(nd, k, d[k]), isec, {})
+    def mutable_assoc(nd,k):
+        nd[k] = d[k]
+        return nd
+
+    isec = set(d).intersection(set(keys))
+    return reduce(mutable_assoc, isec, {})
